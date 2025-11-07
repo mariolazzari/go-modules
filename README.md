@@ -1,1 +1,156 @@
-# go-modules
+# Go modules
+
+## Getting started
+
+### Introduction
+
+A Go module is a container for different Go packages
+
+- Name and version
+- Published on Github
+- Introduced in Go 1.11
+- No global workspace
+- Flexible code structure
+- Improve dependency management
+- Go tools
+- Reproducible builds
+
+### Creating new module
+
+```sh
+mkdir emoserv
+cd emoserv
+go mod init github/mariolazzari/emoserv
+```
+
+### Module structure
+
+- Root dir
+- No content limitation
+- Mix of package and non package directories
+- Structure must fit your needs
+- Plan for growth
+- Avoid deeply nested structure
+
+### Add packages and source code
+
+```go
+package search
+
+import (
+	"slices"
+	"strings"
+)
+
+// Params used to specify search parameters
+type Params struct {
+	Include []string // Include slice of strings to include in search
+	Exclude []string // Exclude slice of strings to exclude in search
+}
+
+// ByDescription searches emojis using the params
+func ByDescription(params Params) (result []Emoji) {
+
+	for _, emo := range emojis {
+		if shouldExclude(emo, params.Exclude) {
+			continue
+		}
+
+		for _, include := range params.Include {
+			include = strings.ToLower(include)
+			if strings.Contains(emo.Label, include) || slices.Contains(emo.Tags, include) {
+				result = append(result, emo)
+			}
+		}
+	}
+
+	return
+}
+
+// version 0.1.0
+// func Like(emoji string) (result []emoji) {...}
+
+// shouldExclude checks emoji tags and labels for exclusions
+func shouldExclude(emo Emoji, excludes []string) bool {
+	for _, exclude := range excludes {
+		exclude = strings.ToLower(exclude)
+		if strings.Contains(emo.Label, exclude) || slices.Contains(emo.Tags, exclude) {
+			return true
+		}
+	}
+
+	return false
+}
+```
+
+### Testing packages
+
+```go
+package search
+
+import (
+	"slices"
+	"testing"
+)
+
+func TestByDesc(t *testing.T) {
+	tests := map[string]struct {
+		params Params
+		want   []string
+	}{
+		"fruit": {
+			Params{Include: []string{"fruit"}},
+			[]string{"🍇", "🍈", "🍉", "🍊", "🍋"},
+		},
+		"cat": {
+			Params{Include: []string{"cat"}},
+			[]string{"🐱"},
+		},
+		"animal faces": {
+			Params{Include: []string{"face"}, Exclude: []string{"smile", "laugh", "grin", "upside-down"}},
+			[]string{"🐵", "🐶", "🐱", "🐯", "🦊"},
+		},
+	}
+
+	for name, test := range tests {
+		t.Run(name, func(t *testing.T) {
+			result := ByDescription(test.params)
+			if len(result) != len(test.want) {
+				t.Errorf("Search ByDescription: want %d emojis, got %d", len(test.want), len(result))
+			}
+
+			for _, emoji := range result {
+				if !slices.Contains(test.want, emoji.Emoji) {
+					t.Errorf("Search ByDescription: expected %s to be in %#v", emoji, test.want)
+				}
+			}
+		})
+	}
+}
+```
+
+```sh
+cd serach
+go test .
+```
+
+### Documenting module
+
+doc.go
+
+```go
+// Package search provides functions to search for and retrieve emojis
+package search
+```
+
+```sh
+go doc -all ./search
+```
+
+## Publishing module
+
+### Exported names
+
+```go
+
+```
