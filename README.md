@@ -206,3 +206,42 @@ go work init ./emojiis ./emoserv
 ## Publishing module
 
 ### Undestanding publishing
+
+- Decentralized (Git)
+- Module path: github.com/username/module
+
+### Remote repository
+
+- Repositoty: module root
+- README.md
+- LICENSE
+
+### Local repository
+
+- git
+- Ssh key or gh cli
+
+```sh
+ssh-keygen -t ed25519 -C "name@mail.com"
+cat ~/.ssh/id_ed25519.pub
+```
+
+### Importing remote modules
+
+```sh
+go mod tidy
+```
+
+### Documenting module
+
+- Repository description
+- Reposiroty topics
+- README.md
+
+### Discovering modules
+
+[Pkg](pkg.go.dev)
+
+## Module versioning
+
+### Semantic versioning
