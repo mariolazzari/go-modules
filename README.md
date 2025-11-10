@@ -245,3 +245,20 @@ go mod tidy
 ## Module versioning
 
 ### Semantic versioning
+
+- Immutable snapshots
+- vMAJOR.MINOR.PATCH
+- v0 is unstable
+- suffix after patch number
+
+### First unstable
+
+```sh
+go get module@0.1.0
+```
+
+### First stable
+
+```sh
+
+```
