@@ -260,5 +260,11 @@ go get module@0.1.0
 ### First stable
 
 ```sh
+go get module@0.2.0-alpha
+```
 
+### Using branches
+
+```sh
+go get module@branch-name
 ```
