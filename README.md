@@ -268,3 +268,9 @@ go get module@0.2.0-alpha
 ```sh
 go get module@branch-name
 ```
+
+### Next major release
+
+- Compatibility break
+- New modules
+- Create new v2 directory

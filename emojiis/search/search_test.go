@@ -1,7 +1,6 @@
 package search
 
 import (
-	"slices"
 	"testing"
 )
 
@@ -26,15 +25,50 @@ func TestByDesc(t *testing.T) {
 
 	for name, test := range tests {
 		t.Run(name, func(t *testing.T) {
-			result := ByDescription(test.params)
-			if len(result) != len(test.want) {
-				t.Errorf("Search ByDescription: want %d emojis, got %d", len(test.want), len(result))
-			}
-
+			result := All(test.params)
+			found := 0
 			for _, emoji := range result {
-				if !slices.Contains(test.want, emoji.Emoji) {
-					t.Errorf("Search ByDescription: expected %s to be in %#v", emoji, test.want)
+				for _, ewant := range test.want {
+					if ewant == emoji.Unicode {
+						found++
+					}
 				}
+			}
+			if found != len(test.want) {
+				t.Error("Did find all expected emojis")
+			}
+		})
+	}
+}
+
+func TestTag(t *testing.T) {
+	tests := map[string]struct {
+		tags []string
+		want []string
+	}{
+		"fruit": {
+			[]string{"fruit"},
+			[]string{"🍇", "🍈", "🍉", "🍊", "🍋"},
+		},
+		"cat": {
+			[]string{"cat"},
+			[]string{"🐱"},
+		},
+	}
+
+	for name, test := range tests {
+		t.Run(name, func(t *testing.T) {
+			result := ByTags(test.tags...)
+			found := 0
+			for _, emoji := range result {
+				for _, ewant := range test.want {
+					if ewant == emoji.Unicode {
+						found++
+					}
+				}
+			}
+			if found != len(test.want) {
+				t.Error("Did find all expected emojis")
 			}
 		})
 	}

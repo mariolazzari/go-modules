@@ -9,13 +9,23 @@ import (
 type Params struct {
 	Include []string // Include slice of strings to include in search
 	Exclude []string // Exclude slice of strings to exclude in search
+	Order   int
+	Hexcode string
 }
 
-// ByDescription searches emojis using the params
-func ByDescription(params Params) (result []Emoji) {
+// All searches for all emojis using the provided params
+func All(params Params) (result []Emoji) {
 
 	for _, emo := range emojis {
 		if shouldExclude(emo, params.Exclude) {
+			continue
+		}
+
+		if params.Order > 0 && params.Order != emo.Order {
+			continue
+		}
+
+		if params.Hexcode != "" && emo.Hexcode != strings.ToUpper(params.Hexcode) {
 			continue
 		}
 
@@ -30,8 +40,18 @@ func ByDescription(params Params) (result []Emoji) {
 	return
 }
 
-// version 0.1.0
-// func Like(emoji string) (result []emoji) {...}
+// ByTags search for emojis with specified tags
+func ByTags(tags ...string) (result []Emoji) {
+	for _, emo := range emojis {
+		for _, tag := range tags {
+			if slices.Contains(emo.Tags, tag) {
+				result = append(result, emo)
+			}
+		}
+	}
+
+	return
+}
 
 // shouldExclude checks emoji tags and labels for exclusions
 func shouldExclude(emo Emoji, excludes []string) bool {
